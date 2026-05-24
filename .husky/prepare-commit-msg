@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+. "$(dirname "$0")/../scripts/husky-env.sh"
 
 run_gen() {
   if [ -x "/c/Program Files/Git/bin/bash.exe" ]; then
@@ -9,8 +10,10 @@ run_gen() {
     bash scripts/gen-commit-msg.sh "$1" "$2"
     return $?
   fi
-  echo "husky - bash not found; install Git for Windows or skip auto commit message" >&2
+  echo "husky - bash not found; skip auto commit message" >&2
   return 0
 }
 
+_root=$(husky_repo_root)
+cd "$_root" || exit 0
 run_gen "$1" "$2"
