@@ -7,7 +7,7 @@
         "dev": "vite",
         "dev:stack": "node ./node_modules/concurrently/dist/bin/concurrently.js \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"npm run dev\" --names server,queue,vite --kill-others-on-fail",
         "dev:logs": "php artisan pail --timeout=0",
-        "prepare": "husky",
+        "prepare": "node scripts/install-husky.cjs",
         "typecheck": "vue-tsc --noEmit"
     },
     "lint-staged": {

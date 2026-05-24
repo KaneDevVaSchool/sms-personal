@@ -1,1 +1,16 @@
-bash scripts/gen-commit-msg.sh "$1" "$2"
+#!/usr/bin/env sh
+
+run_gen() {
+  if [ -x "/c/Program Files/Git/bin/bash.exe" ]; then
+    "/c/Program Files/Git/bin/bash.exe" scripts/gen-commit-msg.sh "$1" "$2"
+    return $?
+  fi
+  if command -v bash >/dev/null 2>&1; then
+    bash scripts/gen-commit-msg.sh "$1" "$2"
+    return $?
+  fi
+  echo "husky - bash not found; install Git for Windows or skip auto commit message" >&2
+  return 0
+}
+
+run_gen "$1" "$2"
