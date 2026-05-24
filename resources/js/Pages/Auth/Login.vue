@@ -6,7 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 
 defineProps({
     canResetPassword: {
@@ -24,12 +24,21 @@ const form = useForm({
 });
 
 const showPassword = ref(false);
+const emailRef = ref(null);
+
+const loginErrorMessage = computed(() => form.errors.email || form.errors.password);
 
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
     });
 };
+
+onMounted(() => {
+    nextTick(() => {
+        emailRef.value?.focus();
+    });
+});
 </script>
 
 <template>
@@ -45,17 +54,33 @@ const submit = () => {
             {{ status }}
         </div>
 
+        <div
+            v-if="loginErrorMessage"
+            class="alert alert-danger alert-dismissible fade show mb-3"
+            role="alert"
+        >
+            <strong class="me-1">Login failed.</strong>
+            {{ loginErrorMessage }}
+            <button
+                type="button"
+                class="btn-close"
+                aria-label="Dismiss"
+                @click="form.clearErrors()"
+            />
+        </div>
+
         <form @submit.prevent="submit">
             <div class="mb-3">
                 <InputLabel for="email" value="Email address" />
                 <TextInput
+                    ref="emailRef"
                     id="email"
                     type="email"
                     v-model="form.email"
                     required
-                    autofocus
                     autocomplete="username"
                     placeholder="Enter your email"
+                    :class="{ 'is-invalid': form.errors.email }"
                 />
                 <InputError :message="form.errors.email" />
             </div>
@@ -79,6 +104,7 @@ const submit = () => {
                         required
                         autocomplete="current-password"
                         placeholder="Enter your password"
+                        :class="{ 'is-invalid': form.errors.password }"
                     />
                     <div
                         class="input-group-text"
@@ -100,7 +126,16 @@ const submit = () => {
             </div>
 
             <div class="mb-0 text-center">
-                <PrimaryButton class="w-100" :disabled="form.processing">Log In</PrimaryButton>
+                <PrimaryButton type="submit" class="w-100" :disabled="form.processing">
+                    <span
+                        v-if="form.processing"
+                        class="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                    />
+                    <span v-if="form.processing">Signing in...</span>
+                    <span v-else>Log In</span>
+                </PrimaryButton>
             </div>
         </form>
 
