@@ -18,6 +18,9 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
+      - name: Build Docker image
+        run: docker build -t ops-platform:ci .
+
       - name: Deploy placeholder
         run: |
           echo "Configure deployment here (Laravel Forge, Envoyer, SSH, Docker, etc.)."

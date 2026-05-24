@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Http\Requests\Project;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdateProjectRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function rules(): array
+    {
+        return [
+            'name' => ['sometimes', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'status' => ['nullable', 'string', 'max:50'],
+            'owner_id' => ['nullable', 'exists:users,id'],
+            'due_date' => ['nullable', 'date'],
+            'progress_percent' => ['nullable', 'integer', 'min:0', 'max:100'],
+        ];
+    }
+}

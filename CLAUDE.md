@@ -48,7 +48,7 @@ Format: `type(scope): description [AI]` — **max 72 characters total**, imperat
 
 Types: `feat`, `fix`, `hotfix`, `refactor`, `test`, `docs`, `chore`, `style`.
 
-See `.cursor/rules/03-commit-convention.mdc` and [commit.md](commit.md). CI validates messages via `commitlint.config.js`.
+See `.cursor/rules/03-commit-convention.mdc` and [.cursor/commands/commit.md](.cursor/commands/commit.md). CI validates messages via `commitlint.config.js`.
 
 If diff > 400 lines, prefer splitting into focused commits.
 
@@ -56,7 +56,7 @@ If diff > 400 lines, prefer splitting into focused commits.
 
 ```bash
 composer install && npm ci
-composer run dev          # server + queue + logs + vite (see composer.json)
+composer run dev          # server + queue + vite (@php scripts/dev.php)
 php artisan test          # PHPUnit
 npm run build             # production frontend build
 ```
