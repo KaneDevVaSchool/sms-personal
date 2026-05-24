@@ -1,0 +1,49 @@
+---
+description: ISC API response envelope and HTTP status rules
+alwaysApply: true
+---
+
+# API response (ISC 3.x / 4.x)
+
+## Success
+
+```json
+{
+  "success": true,
+  "data": {},
+  "error": null,
+  "meta": {
+    "request_id": "...",
+    "trace_id": "...",
+    "timestamp": "ISO-8601"
+  }
+}
+```
+
+## Business error (HTTP 200)
+
+```json
+{
+  "success": false,
+  "data": null,
+  "error": {
+    "code": "USR_404",
+    "message": "Human-readable message",
+    "retryable": false
+  },
+  "meta": { "request_id": "...", "trace_id": "...", "timestamp": "..." }
+}
+```
+
+## Rules
+
+- Always four top-level keys: `success`, `data`, `error`, `meta`
+- `meta` must include `trace_id` and `request_id` on API responses
+- **Business/domain failures:** HTTP **200** + `success: false`
+- **Technical failures** (validation 422, auth 401, not found 404 resource route, crash 500): appropriate **4xx/5xx** via middleware/exception handler — do not return 200 for server crashes
+- Error codes: `{MODULE}_{detail}` — e.g. `AUTH_401`, `USR_404`, `ORD_409`, `SYS_500`, `INVALID_XXX`, `REQUEST_TIMEOUT` (`retryable: true`)
+- Define codes in PHP enums/constants; FE mirrors as const objects
+- Lists: include pagination in `meta` (`page`, `limit`, `total`) when applicable
+- Never expose stack traces or internal exception messages to clients in production
+
+Implement via a shared `ApiResponse` helper or base controller trait in Laravel when adding JSON APIs.

@@ -1,0 +1,43 @@
+---
+description: ISC frontend standards (Vue 3 / Inertia)
+globs: resources/js/**/*.vue,resources/js/**/*.js,resources/js/**/*.ts
+alwaysApply: false
+---
+
+# ISC Frontend (Vue 3 + Inertia)
+
+## Naming (ISC 1.2)
+
+- Components/pages: `PascalCase.vue` · composables: `useXxx.ts` · utils: `camelCase.ts`
+- Constants: `ALL_CAPS` · types/interfaces: `PascalCase`
+
+## Style (ISC 1.3–1.4)
+
+- No magic URLs/timeouts/page sizes — env or shared constants
+- One composable/hook = one concern; extract duplicates
+- JSDoc on shared utilities and composables
+
+## Security (ISC 1.5)
+
+- No `console.log` of tokens/passwords/OTP
+- Never put secrets in `VITE_*` / client bundle — publishable keys only; secrets stay on server
+- No raw `v-html` / `dangerouslySetInnerHTML` without sanitization (DOMPurify)
+- Safe redirects: only relative paths starting with `/`, not `//`
+- Prefer httpOnly cookies or in-memory tokens over `localStorage` for access tokens when possible
+
+## API consumer (ISC 2.x–5.x)
+
+- Handle `success`, `data`, `error`, `meta`; map `error.code` via constants
+- Axios/fetch: default timeout; `AbortController` on unmount or when deps change
+- Loading, error, and empty states on data views
+
+## UX & performance
+
+- Prefer Inertia visits or TanStack Query-style patterns over ad-hoc fetch+useState when caching matters
+- Avoid inline object/array/function props that defeat memoization when hot paths matter
+- `useCallback` / `useMemo` where measured; fix stale `useEffect` deps
+- Error boundary or Inertia error pages for render failures
+- i18n for user-visible strings when i18n is enabled
+- Basic a11y: `alt`, real `<button>`, `aria-label` on icon buttons
+
+Full review checklist: `docs/isc-standards-fe.md`.

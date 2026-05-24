@@ -1,0 +1,30 @@
+---
+description: Conventional Commits with [AI] tag (max 72 chars)
+alwaysApply: true
+---
+
+# Git commits
+
+**Format:** `type(scope): description [AI]`
+
+- Imperative, lowercase description, no trailing period
+- **Total length ≤ 72** (includes `type(scope): ` and ` [AI]`)
+- Always use suffix `[AI]` when the agent creates the commit
+
+**Types:** `feat` · `fix` · `hotfix` · `refactor` · `test` · `docs` · `chore` · `style`
+
+## When committing
+
+1. Inspect `git status` and staged diff (`git diff --staged`, else `git diff`)
+2. Propose one message for all staged changes
+3. If diff **≤ 400 lines:** confirm then commit
+4. If diff **> 400 lines:** warn; suggest split commits by feature/file group; let user pick group or single commit
+
+## Pre-commit checks
+
+- No debug `console.log` / `dd()` left in diff
+- No commented-out dead code blocks
+- No credentials in source
+- Changes match branch scope
+
+See also root `commit.md` and `commitlint.config.js`.

@@ -1,0 +1,37 @@
+---
+description: OPS Platform / SMS — stack, modules, repo layout
+alwaysApply: true
+---
+
+# Project overview
+
+**Repo:** SMS (OPS Platform internal management). **Monolith:** Laravel 13 + Inertia.js + Vue 3 (not separate BE/FE repos).
+
+## Stack
+
+- **PHP:** ^8.3 · **Laravel** 13 · Sanctum · Breeze · Ziggy
+- **FE:** Vue 3 (Composition API) · Vite · Tailwind · pages under `resources/js/`
+- **Tests:** PHPUnit (SQLite in-memory via `phpunit.xml`)
+- **Docs:** `docs/` · **Plans:** `plans/` (see `plans/ops-platform-brief.md`)
+
+## Functional modules (target)
+
+Resources, Websites, Projects/Kanban, Knowledge CMS, Team/RBAC, Contracts, AI accounts, OKRs — details in `plans/ops-platform-brief.md`.
+
+## Directory map
+
+| Path | Purpose |
+|------|---------|
+| `app/` | Models, HTTP (Controllers, Middleware, Form Requests), Providers |
+| `routes/web.php`, `routes/auth.php` | Web + Inertia routes |
+| `database/migrations`, `database/seeders` | Schema & seeds |
+| `resources/js/` | Vue pages, layouts, components (`@/` → `resources/js/`) |
+| `resources/views/app.blade.php` | Inertia root |
+| `tests/` | Feature & Unit tests |
+
+## Agent behavior
+
+- Match existing Laravel Breeze/Inertia patterns before introducing new libraries.
+- API responses must follow ISC envelope (see `04-api-response.mdc`).
+- Commits: `type(scope): description [AI]` ≤ 72 chars (see `03-commit-convention.mdc`).
+- Never commit `.env`, secrets, or log PII.

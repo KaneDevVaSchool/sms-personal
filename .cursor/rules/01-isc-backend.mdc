@@ -1,0 +1,52 @@
+---
+description: ISC backend standards (Laravel/PHP)
+globs: app/**/*.php,database/**/*.php,routes/*.php,config/*.php
+alwaysApply: false
+---
+
+# ISC Backend (Laravel)
+
+## Naming (ISC 1.2)
+
+- Variables: `camelCase` · private props: `_camelCase` (if used) · Classes/methods: `PascalCase` / `camelCase` per PSR
+- Constants: `ALL_CAPS` · Interfaces: `I` prefix optional in PHP; prefer contracts in `app/Contracts`
+
+## Style (ISC 1.3–1.4)
+
+- No magic strings/numbers — config, enums, `config/*.php`
+- Thin controllers → Form Request validation → Service/Action classes
+- Public API methods: PHPDoc; explain WHY on non-obvious business logic
+- No stray `dd()`, debug dumps, or unresolved TODO/FIXME
+
+## Security (ISC 1.5)
+
+- Validate at HTTP boundary (`FormRequest`); never trust client input
+- Eloquent/query builder only — **no** raw SQL string concatenation
+- Check **ownership/authorization** on every resource by ID (avoid IDOR)
+- Mass assignment: `$fillable` / DTO whitelist — never `User::create($request->all())` with sensitive fields
+- Secrets in `.env` only; never log email, phone, tokens, passwords, OTP
+- Wrap unexpected errors; safe client messages; log internally with `trace_id`
+
+## API (ISC 2.x–5.x)
+
+- REST nouns, plural, lowercase: `GET /users`, max 3 path segments
+- Business actions: `POST /users/{id}/reset-password`
+- Standard JSON envelope: `success`, `data`, `error`, `meta` (with `request_id`, `trace_id`, `timestamp`)
+- Business errors: HTTP 200 + `success: false`; technical errors: 4xx/5xx middleware
+- Error codes: module prefix `AUTH_`, `USR_`, `ORD_`, `SYS_` — use enums/constants
+- External HTTP/DB: timeouts from config; Laravel `Http::timeout()` + `CancellationToken` patterns where applicable
+
+## Design (ISC 1.6)
+
+- DI via constructor; no `new Service()` inside domain code
+- Transactions for multi-step writes; avoid N+1 (`with()`, eager loads)
+- Pagination on list endpoints; idempotency keys for create/payment-style POSTs where needed
+- Rate limit auth/OTP routes
+
+## Laravel specifics
+
+- Policies/Gates for authorization; Spatie Permission when RBAC lands
+- Use `API Resources` or dedicated response helpers for consistent envelope
+- Queue long-running work; never block request on external AI/storage without timeout
+
+Full review checklist: `docs/isc-standards-be.md`.
