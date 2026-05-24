@@ -41,49 +41,54 @@ function destroyCheckin(c: Cin) {
             { label: keyResult.title },
             { label: 'Check-ins' },
         ]"
+        title="Check-ins"
     >
-        <div class="mb-4 flex flex-wrap justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-semibold dark:text-gray-100">Check-ins</h1>
-                <p class="text-sm text-gray-500">{{ keyResult.title }} · {{ objective.title }}</p>
+        <div class="row mb-3">
+            <div class="col-12 d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <p class="text-muted mb-0">{{ keyResult.title }} · {{ objective.title }}</p>
+                <Link
+                    :href="route('objectives.key-results.checkins.create', [objective.id, keyResult.id])"
+                    class="btn btn-primary btn-sm"
+                >
+                    New check-in
+                </Link>
             </div>
-            <Link
-                :href="route('objectives.key-results.checkins.create', [objective.id, keyResult.id])"
-                class="rounded-md bg-indigo-600 px-4 py-2 text-sm text-white"
-            >
-                New check-in
-            </Link>
         </div>
 
-        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-                <thead class="bg-gray-50 dark:bg-gray-950">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">When</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Value</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">User</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Note</th>
-                        <th class="px-4 py-3 text-right text-xs uppercase text-gray-500">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                    <tr v-for="c in checkins.data" :key="c.id">
-                        <td class="px-4 py-3 text-sm">{{ c.checked_at ? String(c.checked_at).replace('T', ' ').slice(0, 16) : '—' }}</td>
-                        <td class="px-4 py-3 text-sm font-medium">{{ c.value }}</td>
-                        <td class="px-4 py-3 text-sm">{{ c.user?.name ?? '—' }}</td>
-                        <td class="px-4 py-3 max-w-xs truncate text-sm text-gray-600">{{ c.note ?? '—' }}</td>
-                        <td class="px-4 py-3 text-right">
-                            <Link
-                                :href="route('objectives.key-results.checkins.edit', [objective.id, keyResult.id, c.id])"
-                                class="mr-2 text-sm text-indigo-600 dark:text-indigo-400"
-                            >
-                                Edit
-                            </Link>
-                            <DangerButton type="button" class="py-1 text-xs" @click="destroyCheckin(c)">Delete</DangerButton>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>When</th>
+                            <th>Value</th>
+                            <th>User</th>
+                            <th>Note</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="c in checkins.data" :key="c.id">
+                            <td>{{ c.checked_at ? String(c.checked_at).replace('T', ' ').slice(0, 16) : '—' }}</td>
+                            <td class="fw-medium">{{ c.value }}</td>
+                            <td>{{ c.user?.name ?? '—' }}</td>
+                            <td class="text-truncate" style="max-width: 12rem">{{ c.note ?? '—' }}</td>
+                            <td class="text-end">
+                                <Link
+                                    :href="route('objectives.key-results.checkins.edit', [objective.id, keyResult.id, c.id])"
+                                    class="btn btn-sm btn-outline-primary me-2"
+                                >
+                                    Edit
+                                </Link>
+                                <DangerButton type="button" class="btn-sm" @click="destroyCheckin(c)">Delete</DangerButton>
+                            </td>
+                        </tr>
+                        <tr v-if="!checkins.data.length">
+                            <td colspan="5" class="text-center text-muted py-4">No check-ins found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <PaginationLinks v-if="checkins.links.length" :links="checkins.links" />
         </div>
     </AppLayout>

@@ -37,49 +37,52 @@ function submit() {
             { label: 'Contracts', href: route('contracts.index') },
             { label: 'Create' },
         ]"
+        title="Create contract"
     >
-        <h1 class="mb-6 text-2xl font-semibold dark:text-gray-100">Create contract</h1>
-
-        <form class="max-w-xl space-y-5 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900" @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
-                <TextInput id="name" v-model="form.name" required class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.name" />
+        <div class="card">
+            <div class="card-body">
+                <form @submit.prevent="submit">
+                    <div class="mb-3">
+                        <InputLabel for="name" value="Name" />
+                        <TextInput id="name" v-model="form.name" required />
+                        <InputError class="mt-1" :message="form.errors.name" />
+                    </div>
+                    <div class="mb-3">
+                        <InputLabel for="partner" value="Partner" />
+                        <TextInput id="partner" v-model="form.partner" />
+                        <InputError class="mt-1" :message="form.errors.partner" />
+                    </div>
+                    <div class="mb-3">
+                        <InputLabel for="type" value="Type" />
+                        <TextInput id="type" v-model="form.type" />
+                        <InputError class="mt-1" :message="form.errors.type" />
+                    </div>
+                    <div class="mb-3">
+                        <InputLabel for="value" value="Value" />
+                        <TextInput id="value" v-model="form.value" type="number" step="0.01" />
+                        <InputError class="mt-1" :message="form.errors.value" />
+                    </div>
+                    <div class="mb-3">
+                        <InputLabel for="signed_at" value="Signed at" />
+                        <TextInput id="signed_at" v-model="form.signed_at" type="date" />
+                        <InputError class="mt-1" :message="form.errors.signed_at" />
+                    </div>
+                    <div class="mb-3">
+                        <InputLabel for="expires_at" value="Expires at" />
+                        <TextInput id="expires_at" v-model="form.expires_at" type="date" />
+                        <InputError class="mt-1" :message="form.errors.expires_at" />
+                    </div>
+                    <div class="mb-3">
+                        <InputLabel for="status" value="Status" />
+                        <TextInput id="status" v-model="form.status" />
+                        <InputError class="mt-1" :message="form.errors.status" />
+                    </div>
+                    <div class="d-flex gap-2">
+                        <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                        <Link :href="route('contracts.index')" class="btn btn-light">Cancel</Link>
+                    </div>
+                </form>
             </div>
-            <div>
-                <InputLabel for="partner" value="Partner" />
-                <TextInput id="partner" v-model="form.partner" class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.partner" />
-            </div>
-            <div>
-                <InputLabel for="type" value="Type" />
-                <TextInput id="type" v-model="form.type" class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.type" />
-            </div>
-            <div>
-                <InputLabel for="value" value="Value" />
-                <TextInput id="value" v-model="form.value" type="number" step="0.01" class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.value" />
-            </div>
-            <div>
-                <InputLabel for="signed_at" value="Signed at" />
-                <TextInput id="signed_at" v-model="form.signed_at" type="date" class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.signed_at" />
-            </div>
-            <div>
-                <InputLabel for="expires_at" value="Expires at" />
-                <TextInput id="expires_at" v-model="form.expires_at" type="date" class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.expires_at" />
-            </div>
-            <div>
-                <InputLabel for="status" value="Status" />
-                <TextInput id="status" v-model="form.status" class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.status" />
-            </div>
-            <div class="flex gap-3">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
-                <Link :href="route('contracts.index')" class="inline-flex border px-4 py-2 text-xs uppercase">Cancel</Link>
-            </div>
-        </form>
+        </div>
     </AppLayout>
 </template>

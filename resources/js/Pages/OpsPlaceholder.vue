@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
 defineProps({
@@ -17,30 +17,12 @@ defineProps({
 <template>
     <Head :title="title" />
 
-    <AuthenticatedLayout>
-        <template #header>
-            <h2
-                class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
-            >
-                {{ title }}
-            </h2>
-        </template>
-
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div
-                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"
-                >
-                    <div class="p-6 text-gray-900 dark:text-gray-100">
-                        <p class="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                            Scaffolding page: wire real UI components here.
-                        </p>
-                        <pre
-                            class="overflow-x-auto rounded bg-gray-100 p-4 text-xs text-gray-900 dark:bg-gray-950 dark:text-gray-100"
-                        >{{ JSON.stringify(snapshot, null, 2) }}</pre>
-                    </div>
-                </div>
+    <AppLayout :breadcrumbs="[{ label: 'Dashboard', href: route('dashboard') }, { label: title }]" :title="title">
+        <div class="card">
+            <div class="card-body">
+                <p class="text-muted mb-4">Scaffolding page: wire real UI components here.</p>
+                <pre class="bg-light p-3 rounded small mb-0">{{ JSON.stringify(snapshot, null, 2) }}</pre>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </AppLayout>
 </template>

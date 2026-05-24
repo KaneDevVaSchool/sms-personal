@@ -19,8 +19,7 @@ const editor = useEditor({
     extensions: [StarterKit],
     editorProps: {
         attributes: {
-            class:
-                'min-h-[220px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-100 dark:focus-visible:ring-indigo-400',
+            class: 'form-control min-vh-25 border rounded p-2',
         },
     },
     onUpdate: ({ editor: ed }) => {
@@ -46,7 +45,7 @@ onBeforeUnmount(() => editor.value?.destroy());
 </script>
 
 <template>
-    <div>
+    <div class="border rounded">
         <EditorContent v-if="editor" :editor="editor" />
     </div>
 </template>

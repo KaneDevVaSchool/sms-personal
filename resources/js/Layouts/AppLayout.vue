@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import BreadcrumbNav from '@/components/BreadcrumbNav.vue';
-import NotificationBell from '@/components/NotificationBell.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
+import BreadcrumbNav from '@/Components/BreadcrumbNav.vue';
+import NotificationBell from '@/Components/NotificationBell.vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { computed, onMounted, ref } from 'vue';
-import { mainNav } from '@/utils/navigation';
+import { computed, onMounted } from 'vue';
+import { isNavActive, isNavGroupActive, mainNav } from '@/utils/navigation';
 import type { BreadcrumbItem } from '@/types/common';
 
-withDefaults(
+const props = withDefaults(
     defineProps<{
         breadcrumbs?: BreadcrumbItem[];
+        title?: string;
     }>(),
     {
         breadcrumbs: () => [{ label: 'Dashboard', href: route('dashboard') }],
@@ -19,134 +17,206 @@ withDefaults(
 );
 
 const page = usePage();
-const sidebarOpen = ref(false);
-const dark = ref(false);
-
-onMounted(() => {
-    dark.value =
-        localStorage.getItem('ops-theme') === 'dark' ||
-        (!localStorage.getItem('ops-theme') &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches);
-    applyTheme();
-});
-
-function applyTheme() {
-    document.documentElement.classList.toggle('dark', dark.value);
-}
-
-function toggleTheme() {
-    dark.value = !dark.value;
-    localStorage.setItem('ops-theme', dark.value ? 'dark' : 'light');
-    applyTheme();
-}
 
 const userName = computed(
-    () => (page.props.auth as { user?: { name: string } })?.user?.name ?? '',
+    () => (page.props.auth as { user?: { name: string; email?: string } })?.user?.name ?? '',
 );
+
+const pageTitle = computed(
+    () => props.title ?? props.breadcrumbs[props.breadcrumbs.length - 1]?.label ?? 'Dashboard',
+);
+
+onMounted(() => {
+    document.body.classList.remove('authentication-bg', 'position-relative');
+    const stored = localStorage.getItem('ops-theme');
+    if (stored === 'dark') {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+    } else if (stored === 'light') {
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+    }
+});
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-bs-theme', next);
+    localStorage.setItem('ops-theme', next);
+}
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-950">
-        <div
-            v-if="sidebarOpen"
-            class="fixed inset-0 z-40 bg-black/40 lg:hidden"
-            @click="sidebarOpen = false"
-        />
+    <div class="wrapper">
+        <div class="navbar-custom">
+            <div class="topbar container-fluid">
+                <div class="d-flex align-items-center gap-lg-2 gap-1">
+                    <div class="logo-topbar ops-brand">
+                        <Link :href="route('dashboard')" class="logo-light">
+                            <span class="logo-lg ops-brand-text">OPS Platform</span>
+                            <span class="logo-sm ops-brand-text">OPS</span>
+                        </Link>
+                        <Link :href="route('dashboard')" class="logo-dark">
+                            <span class="logo-lg ops-brand-text">OPS Platform</span>
+                            <span class="logo-sm ops-brand-text">OPS</span>
+                        </Link>
+                    </div>
 
-        <aside
-            class="fixed inset-y-0 left-0 z-50 w-64 transform border-r border-gray-200 bg-white transition-transform dark:border-gray-800 dark:bg-gray-900 lg:translate-x-0"
-            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-        >
-            <div class="flex h-16 items-center border-b border-gray-200 px-4 dark:border-gray-800">
-                <Link :href="route('dashboard')" class="flex items-center gap-2">
-                    <ApplicationLogo class="h-8 w-8 fill-current text-gray-800 dark:text-gray-100" />
-                    <span class="text-sm font-bold text-gray-900 dark:text-gray-100">OPS Platform</span>
-                </Link>
-            </div>
-            <nav class="space-y-1 p-3">
-                <Link
-                    v-for="item in mainNav"
-                    :key="item.routeName"
-                    :href="route(item.routeName)"
-                    class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                    :class="{
-                        'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white': route().current(
-                            item.routeName,
-                        ),
-                    }"
-                >
-                    {{ item.label }}
-                </Link>
-                <Link
-                    :href="route('team.departments.index')"
-                    class="ml-3 block rounded-md px-3 py-1.5 text-xs text-gray-500 hover:text-gray-800 dark:hover:text-gray-200"
-                >
-                    Departments
-                </Link>
-                <Link
-                    :href="route('knowledge.categories.index')"
-                    class="ml-3 block rounded-md px-3 py-1.5 text-xs text-gray-500 hover:text-gray-800 dark:hover:text-gray-200"
-                >
-                    Categories
-                </Link>
-            </nav>
-        </aside>
-
-        <div class="lg:pl-64">
-            <header
-                class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 dark:border-gray-800 dark:bg-gray-900 sm:px-6"
-            >
-                <button
-                    type="button"
-                    class="rounded-md p-2 text-gray-600 lg:hidden dark:text-gray-300"
-                    aria-label="Open menu"
-                    @click="sidebarOpen = true"
-                >
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"
-                        />
-                    </svg>
-                </button>
-
-                <div class="flex flex-1 items-center justify-end gap-2">
-                    <button
-                        type="button"
-                        class="rounded-md p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
-                        aria-label="Toggle dark mode"
-                        @click="toggleTheme"
-                    >
-                        {{ dark ? 'Light' : 'Dark' }}
+                    <button type="button" class="button-toggle-menu" aria-label="Toggle menu">
+                        <i class="ri-menu-2-fill"></i>
                     </button>
-                    <NotificationBell />
-                    <Dropdown align="right" width="48">
-                        <template #trigger>
-                            <span class="inline-flex rounded-md">
-                                <button
-                                    type="button"
-                                    class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium text-gray-700 dark:bg-gray-900 dark:text-gray-200"
-                                >
-                                    {{ userName }}
-                                </button>
-                            </span>
-                        </template>
-                        <template #content>
-                            <DropdownLink :href="route('profile.edit')">Profile</DropdownLink>
-                            <DropdownLink :href="route('logout')" method="post" as="button">
-                                Log out
-                            </DropdownLink>
-                        </template>
-                    </Dropdown>
                 </div>
-            </header>
 
-            <main class="p-4 sm:p-6 lg:p-8">
-                <BreadcrumbNav :items="breadcrumbs" />
-                <slot />
-            </main>
+                <ul class="topbar-menu d-flex align-items-center gap-1">
+                    <li class="d-none d-sm-inline-block">
+                        <button
+                            type="button"
+                            class="nav-link btn btn-link border-0"
+                            id="light-dark-mode"
+                            aria-label="Toggle theme"
+                            @click="toggleTheme"
+                        >
+                            <i class="ri-moon-fill fs-22"></i>
+                        </button>
+                    </li>
+                    <li>
+                        <NotificationBell />
+                    </li>
+                    <li class="dropdown me-md-2">
+                        <a
+                            class="nav-link dropdown-toggle arrow-none nav-user px-2"
+                            data-bs-toggle="dropdown"
+                            href="#"
+                            role="button"
+                            aria-haspopup="false"
+                            aria-expanded="false"
+                        >
+                            <span class="account-user-avatar">
+                                <span
+                                    class="avatar-title rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px"
+                                >
+                                    <i class="ri-user-3-line"></i>
+                                </span>
+                            </span>
+                            <span class="d-lg-flex flex-column gap-1 d-none">
+                                <h5 class="my-0">{{ userName }}</h5>
+                            </span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
+                            <div class="dropdown-header noti-title">
+                                <h6 class="text-overflow m-0">Welcome!</h6>
+                            </div>
+                            <Link :href="route('profile.edit')" class="dropdown-item">
+                                <i class="ri-account-circle-fill align-middle me-1"></i>
+                                <span>Profile</span>
+                            </Link>
+                            <Link
+                                :href="route('logout')"
+                                method="post"
+                                as="button"
+                                class="dropdown-item"
+                            >
+                                <i class="ri-logout-box-fill align-middle me-1"></i>
+                                <span>Logout</span>
+                            </Link>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="leftside-menu">
+            <Link :href="route('dashboard')" class="logo logo-light ops-brand">
+                <span class="logo-lg">OPS Platform</span>
+                <span class="logo-sm">OPS</span>
+            </Link>
+            <Link :href="route('dashboard')" class="logo logo-dark ops-brand">
+                <span class="logo-lg">OPS Platform</span>
+                <span class="logo-sm">OPS</span>
+            </Link>
+
+            <div class="button-sm-hover" data-bs-toggle="tooltip" data-bs-placement="right" title="Show Full Sidebar">
+                <i class="ri-checkbox-blank-circle-line align-middle"></i>
+            </div>
+
+            <div class="button-close-fullsidebar">
+                <i class="ri-close-fill align-middle"></i>
+            </div>
+
+            <div class="h-100" id="leftside-menu-container" data-simplebar>
+                <ul class="side-nav">
+                    <li class="side-nav-title mt-1">Main</li>
+
+                    <template v-for="item in mainNav" :key="item.routeName">
+                        <li v-if="item.children?.length" class="side-nav-item">
+                            <a
+                                data-bs-toggle="collapse"
+                                :href="`#${item.collapseId}`"
+                                class="side-nav-link"
+                                :class="{ active: isNavGroupActive(item) }"
+                                :aria-expanded="isNavGroupActive(item)"
+                            >
+                                <i :class="item.icon"></i>
+                                <span>{{ item.label }}</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div
+                                :id="item.collapseId"
+                                class="collapse"
+                                :class="{ show: isNavGroupActive(item) }"
+                            >
+                                <ul class="side-nav-second-level">
+                                    <li v-for="child in item.children" :key="child.routeName">
+                                        <Link
+                                            :href="route(child.routeName)"
+                                            :class="{ active: isNavActive(child.routeName) }"
+                                        >
+                                            {{ child.label }}
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li v-else class="side-nav-item">
+                            <Link
+                                :href="route(item.routeName)"
+                                class="side-nav-link"
+                                :class="{ active: isNavActive(item.routeName) }"
+                            >
+                                <i :class="item.icon"></i>
+                                <span>{{ item.label }}</span>
+                            </Link>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-page">
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <BreadcrumbNav :items="breadcrumbs" />
+                                </div>
+                                <h4 class="page-title">{{ pageTitle }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <slot />
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ new Date().getFullYear() }} © OPS Platform
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 </template>

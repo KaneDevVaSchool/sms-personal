@@ -33,29 +33,24 @@ function destroyPost(id: number) {
             { label: 'Posts', href: route('knowledge.posts.index') },
             { label: post.title },
         ]"
+        :title="post.title"
     >
-        <div class="mb-6 flex flex-wrap justify-between gap-4">
-            <div>
-                <p class="text-sm text-gray-500">{{ post.category?.name ?? 'Uncategorized' }} · {{ post.author?.name }}</p>
-                <h1 class="text-2xl font-semibold dark:text-gray-100">{{ post.title }}</h1>
-            </div>
-            <div class="flex gap-2">
-                <Link
-                    :href="route('knowledge.posts.edit', post.id)"
-                    class="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-800"
-                >
-                    Edit
-                </Link>
-                <DangerButton type="button" class="text-sm tracking-normal normal-case" @click="destroyPost(post.id)">Delete</DangerButton>
+        <div class="row mb-3">
+            <div class="col-12">
+                <p class="text-muted mb-2">{{ post.category?.name ?? 'Uncategorized' }} · {{ post.author?.name }}</p>
+                <div class="d-flex flex-wrap gap-2 justify-content-end">
+                    <Link :href="route('knowledge.posts.edit', post.id)" class="btn btn-outline-primary btn-sm">Edit</Link>
+                    <DangerButton type="button" @click="destroyPost(post.id)">Delete</DangerButton>
+                </div>
             </div>
         </div>
 
-        <article class="rounded-lg border border-gray-200 bg-white p-6 prose-headings:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:prose-headings:text-gray-100">
-            <div class="article-body text-gray-900 dark:text-gray-100 [&_a]:text-indigo-600 dark:[&_a]:text-indigo-400" v-html="post.body ?? '<p class=text-gray-500>No content.</p>'" />
-            <footer class="mt-6 flex flex-wrap gap-4 border-t pt-4 text-sm text-gray-500">
+        <article class="card">
+            <div class="card-body article-body" v-html="post.body ?? '<p class=text-muted>No content.</p>'" />
+            <div class="card-footer d-flex flex-wrap gap-3 text-muted small">
                 <span>Status: {{ post.status ?? '—' }}</span>
                 <span v-if="post.published_at">Published {{ post.published_at }}</span>
-            </footer>
+            </div>
         </article>
     </AppLayout>
 </template>

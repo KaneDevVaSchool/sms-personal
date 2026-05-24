@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PageHeader from '@/Components/PageHeader.vue';
 import PaginationLinks from '@/Components/PaginationLinks.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
@@ -27,43 +28,41 @@ defineProps<{
             { label: 'Dashboard', href: route('dashboard') },
             { label: 'Objectives' },
         ]"
+        title="Objectives"
     >
-        <div class="mb-4 flex justify-between gap-4">
-            <h1 class="text-2xl font-semibold dark:text-gray-100">Objectives</h1>
-            <Link :href="route('objectives.create')" class="rounded-md bg-indigo-600 px-4 py-2 text-sm text-white">New objective</Link>
-        </div>
+        <PageHeader title="Objectives" :create-href="route('objectives.create')" create-label="New objective" />
 
-        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-                <thead class="bg-gray-50 dark:bg-gray-950">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Title</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Period</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Team</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Owner</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">KRs</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                    <tr v-for="o in objectives.data" :key="o.id">
-                        <td class="px-4 py-3">
-                            <Link :href="route('objectives.show', o.id)" class="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
-                                {{ o.title }}
-                            </Link>
-                            <Link
-                                :href="route('objectives.key-results.index', o.id)"
-                                class="ml-2 text-xs text-gray-500 hover:text-indigo-600 dark:text-indigo-400"
-                            >
-                                Key results
-                            </Link>
-                        </td>
-                        <td class="px-4 py-3 text-sm">Q{{ o.quarter ?? '—' }} {{ o.year ?? '' }}</td>
-                        <td class="px-4 py-3 text-sm">{{ o.team?.name ?? '—' }}</td>
-                        <td class="px-4 py-3 text-sm">{{ o.owner?.name ?? '—' }}</td>
-                        <td class="px-4 py-3 text-sm">{{ o.key_results_count }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title</th>
+                            <th>Period</th>
+                            <th>Team</th>
+                            <th>Owner</th>
+                            <th>KRs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="o in objectives.data" :key="o.id">
+                            <td>
+                                <Link :href="route('objectives.show', o.id)" class="fw-medium">{{ o.title }}</Link>
+                                <Link :href="route('objectives.key-results.index', o.id)" class="ms-2 small text-muted">
+                                    Key results
+                                </Link>
+                            </td>
+                            <td>Q{{ o.quarter ?? '—' }} {{ o.year ?? '' }}</td>
+                            <td>{{ o.team?.name ?? '—' }}</td>
+                            <td>{{ o.owner?.name ?? '—' }}</td>
+                            <td>{{ o.key_results_count }}</td>
+                        </tr>
+                        <tr v-if="!objectives.data.length">
+                            <td colspan="5" class="text-center text-muted py-4">No objectives found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <PaginationLinks v-if="objectives.links.length" :links="objectives.links" />
         </div>
     </AppLayout>

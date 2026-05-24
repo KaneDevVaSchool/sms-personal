@@ -33,37 +33,32 @@ function destroyProject(id: number) {
             { label: 'Projects', href: route('projects.index') },
             { label: project.name },
         ]"
+        :title="project.name"
     >
-        <div class="mb-6 flex flex-wrap justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-semibold dark:text-gray-100">{{ project.name }}</h1>
-                <p v-if="project.description" class="mt-2 text-gray-600 dark:text-gray-400">{{ project.description }}</p>
-            </div>
-            <div class="flex flex-wrap gap-2">
-                <Link
-                    :href="route('projects.tasks.index', project.id)"
-                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm text-white hover:bg-indigo-500"
-                >
-                    Task board
-                </Link>
-                <Link
-                    :href="route('projects.edit', project.id)"
-                    class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
-                >
-                    Edit
-                </Link>
-                <DangerButton type="button" class="text-sm tracking-normal normal-case" @click="destroyProject(project.id)">Delete</DangerButton>
+        <div class="row mb-3">
+            <div class="col-12">
+                <p v-if="project.description" class="text-muted mb-2">{{ project.description }}</p>
+                <div class="d-flex flex-wrap gap-2 justify-content-end">
+                    <Link :href="route('projects.tasks.index', project.id)" class="btn btn-primary btn-sm">Task board</Link>
+                    <Link :href="route('projects.edit', project.id)" class="btn btn-outline-primary btn-sm">Edit</Link>
+                    <DangerButton type="button" @click="destroyProject(project.id)">Delete</DangerButton>
+                </div>
             </div>
         </div>
 
-        <dl class="max-w-2xl space-y-3 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-            <div><dt class="text-xs uppercase text-gray-500">Owner</dt>{{ project.owner?.name ?? '—' }}</div>
-            <div><dt class="text-xs uppercase text-gray-500">Status</dt>{{ project.status ?? '—' }}</div>
-            <div>
-                <dt class="text-xs uppercase text-gray-500">Due</dt>
-                {{ project.due_date ? String(project.due_date).slice(0, 10) : '—' }}
+        <div class="card">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 text-muted">Owner</dt>
+                    <dd class="col-sm-9">{{ project.owner?.name ?? '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">Status</dt>
+                    <dd class="col-sm-9">{{ project.status ?? '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">Due</dt>
+                    <dd class="col-sm-9">{{ project.due_date ? String(project.due_date).slice(0, 10) : '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">Progress</dt>
+                    <dd class="col-sm-9">{{ project.progress_percent ?? '—' }}%</dd>
+                </dl>
             </div>
-            <div><dt class="text-xs uppercase text-gray-500">Progress</dt>{{ project.progress_percent ?? '—' }}%</div>
-        </dl>
+        </div>
     </AppLayout>
 </template>

@@ -6,19 +6,25 @@
         "build": "vite build",
         "dev": "vite",
         "dev:stack": "node ./node_modules/concurrently/dist/bin/concurrently.js \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"npm run dev\" --names server,queue,vite --kill-others-on-fail",
-        "dev:logs": "php artisan pail --timeout=0"
+        "dev:logs": "php artisan pail --timeout=0",
+        "prepare": "husky",
+        "typecheck": "vue-tsc --noEmit"
+    },
+    "lint-staged": {
+        "*.php": [
+            "./vendor/bin/pint"
+        ]
     },
     "devDependencies": {
+        "@commitlint/cli": "^19.8.0",
+        "@commitlint/config-conventional": "^19.8.0",
         "@inertiajs/vue3": "^2.0.0",
-        "@tailwindcss/forms": "^0.5.3",
-        "@tailwindcss/vite": "^4.0.0",
         "@types/node": "^25.9.1",
         "@vitejs/plugin-vue": "^6.0.0",
-        "autoprefixer": "^10.4.12",
         "concurrently": "^9.0.1",
+        "husky": "^9.1.7",
         "laravel-vite-plugin": "^3.1",
-        "postcss": "^8.4.31",
-        "tailwindcss": "^3.2.1",
+        "lint-staged": "^15.5.0",
         "typescript": "^6.0.3",
         "vite": "^8.0.0",
         "vue": "^3.4.0",

@@ -39,40 +39,45 @@ function submit() {
             { label: 'Team', href: route('team.users.index') },
             { label: user.name },
         ]"
+        :title="user.name"
     >
-        <h1 class="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ user.name }}</h1>
+        <div class="card">
+            <div class="card-body">
+                <form @submit.prevent="submit">
+                    <div class="mb-3">
+                        <InputLabel value="Email" />
+                        <p class="mb-0 text-muted">{{ user.email }}</p>
+                    </div>
 
-        <form class="max-w-lg space-y-4 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900" @submit.prevent="submit">
-            <div>
-                <InputLabel value="Email" />
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ user.email }}</p>
+                    <div class="mb-3">
+                        <InputLabel for="department_id" value="Department" />
+                        <select id="department_id" v-model="form.department_id" class="form-select">
+                            <option :value="null">—</option>
+                            <option v-for="d in departments" :key="d.id" :value="d.id">{{ d.name }}</option>
+                        </select>
+                        <InputError class="mt-1" :message="form.errors.department_id" />
+                    </div>
+
+                    <div class="mb-3">
+                        <InputLabel value="Roles" />
+                        <div class="mt-1">
+                            <div v-for="role in roleOptions" :key="role" class="form-check">
+                                <input
+                                    :id="`role-${role}`"
+                                    v-model="form.roles"
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    :value="role"
+                                />
+                                <label class="form-check-label" :for="`role-${role}`">{{ role }}</label>
+                            </div>
+                        </div>
+                        <InputError class="mt-1" :message="form.errors.roles" />
+                    </div>
+
+                    <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                </form>
             </div>
-
-            <div>
-                <InputLabel for="department_id" value="Department" />
-                <select
-                    id="department_id"
-                    v-model="form.department_id"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-700 dark:bg-gray-950"
-                >
-                    <option :value="null">—</option>
-                    <option v-for="d in departments" :key="d.id" :value="d.id">{{ d.name }}</option>
-                </select>
-                <InputError class="mt-2" :message="form.errors.department_id" />
-            </div>
-
-            <div>
-                <InputLabel value="Roles" />
-                <div class="mt-2 space-y-2">
-                    <label v-for="role in roleOptions" :key="role" class="flex items-center gap-2 text-sm">
-                        <input v-model="form.roles" type="checkbox" :value="role" class="rounded border-gray-300" />
-                        {{ role }}
-                    </label>
-                </div>
-                <InputError class="mt-2" :message="form.errors.roles" />
-            </div>
-
-            <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
-        </form>
+        </div>
     </AppLayout>
 </template>

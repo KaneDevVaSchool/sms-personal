@@ -96,52 +96,55 @@ function submitQuick(column: string) {
             { label: project.name, href: route('projects.show', project.id) },
             { label: 'Board' },
         ]"
+        :title="`${project.name} — Tasks`"
     >
-        <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-semibold dark:text-gray-100">{{ project.name }} — Tasks</h1>
-                <p class="text-sm text-gray-500">Drag tasks between columns; order syncs automatically.</p>
+        <div class="row mb-3">
+            <div class="col-12 d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <p class="text-muted mb-0 small">Drag tasks between columns; order syncs automatically.</p>
+                <Link :href="route('projects.show', project.id)" class="btn btn-outline-primary btn-sm">
+                    Project overview
+                </Link>
             </div>
-            <Link :href="route('projects.show', project.id)" class="text-sm text-indigo-600 hover:underline dark:text-indigo-400">
-                ← Project overview
-            </Link>
         </div>
 
-        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <section v-for="col in statusColumns" :key="col" class="flex min-h-[320px] flex-col rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-950">
-                <div class="border-b border-gray-200 px-3 py-2 dark:border-gray-800">
-                    <h2 class="font-semibold text-gray-900 dark:text-gray-100">
-                        {{ columnLabels[col] ?? col }}
-                    </h2>
-                    <div class="mt-2 flex gap-2">
-                        <TextInput v-model="draftTitles[col]" type="text" class="flex-1 text-xs" placeholder="Quick add title" />
-                        <PrimaryButton
-                            type="button"
-                            class="py-2 text-xs normal-case tracking-normal"
-                            :disabled="addTaskForm.processing || !(draftTitles[col]?.trim?.())"
-                            @click="submitQuick(col)"
-                        >
-                            Add
-                        </PrimaryButton>
-                    </div>
-                    <InputError :message="addTaskForm.errors.title" class="mt-1" />
-                </div>
-
-                <draggable
-                    v-model="board[col]"
-                    item-key="id"
-                    group="tasks"
-                    class="flex flex-1 flex-col gap-2 p-2"
-                    ghost-class="opacity-60"
-                    @end="persistReorder"
-                >
-                    <template #item="{ element }">
-                        <div class="cursor-grab rounded border border-gray-200 bg-white p-2 shadow-sm active:cursor-grabbing dark:border-gray-700 dark:bg-gray-900">
-                            <p class="text-sm font-medium">{{ element.title }}</p>
+        <div class="row g-3">
+            <div v-for="col in statusColumns" :key="col" class="col-md-6 col-xl-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-2">{{ columnLabels[col] ?? col }}</h5>
+                        <div class="d-flex gap-2">
+                            <TextInput v-model="draftTitles[col]" type="text" class="form-control form-control-sm" placeholder="Quick add title" />
+                            <PrimaryButton
+                                type="button"
+                                class="btn-sm"
+                                :disabled="addTaskForm.processing || !(draftTitles[col]?.trim?.())"
+                                @click="submitQuick(col)"
+                            >
+                                Add
+                            </PrimaryButton>
                         </div>
-                    </template>
-                </draggable>
-            </section>
+                        <InputError :message="addTaskForm.errors.title" class="mt-1" />
+                    </div>
+
+                    <draggable
+                        v-model="board[col]"
+                        item-key="id"
+                        group="tasks"
+                        class="card-body d-flex flex-column gap-2 kanban-column-body"
+                        ghost-class="opacity-50"
+                        style="min-height: 280px"
+                        @end="persistReorder"
+                    >
+                        <template #item="{ element }">
+                            <div class="card mb-0 shadow-sm" style="cursor: grab">
+                                <div class="card-body py-2 px-3">
+                                    <p class="mb-0 fw-medium small">{{ element.title }}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </draggable>
+                </div>
+            </div>
         </div>
     </AppLayout>
 </template>

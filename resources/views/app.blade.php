@@ -4,18 +4,23 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'OPS Platform') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="shortcut icon" href="{{ asset('jidox/layouts/assets/images/favicon.ico') }}">
 
-        <!-- Scripts -->
+        <script src="{{ asset('jidox/layouts/assets/js/config.js') }}"></script>
+
+        <link href="{{ asset('jidox/layouts/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" />
+        <link href="{{ asset('jidox/layouts/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+
         @routes
-        @vite(['resources/js/app.ts', "resources/js/Pages/{$page['component']}.vue"])
+        @vite(['resources/js/app.ts'])
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
         @inertia
+
+        <script src="{{ asset('jidox/layouts/assets/js/vendor.min.js') }}"></script>
+        <script src="{{ asset('jidox/layouts/assets/js/app.min.js') }}"></script>
     </body>
 </html>

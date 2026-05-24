@@ -63,61 +63,59 @@ function destroyContract() {
             { label: 'Contracts', href: route('contracts.index') },
             { label: contract.name },
         ]"
+        :title="contract.name"
     >
-        <div class="mb-6 flex flex-wrap justify-between gap-4">
-            <h1 class="text-2xl font-semibold dark:text-gray-100">{{ contract.name }}</h1>
-            <div class="flex gap-2">
-                <Link :href="route('contracts.edit', contract.id)" class="rounded-md border px-3 py-2 text-sm dark:border-gray-600">Edit</Link>
-                <DangerButton type="button" class="text-sm tracking-normal normal-case" @click="destroyContract">Delete</DangerButton>
+        <div class="row mb-3">
+            <div class="col-12 d-flex flex-wrap justify-content-end gap-2">
+                <Link :href="route('contracts.edit', contract.id)" class="btn btn-outline-primary btn-sm">Edit</Link>
+                <DangerButton type="button" @click="destroyContract">Delete</DangerButton>
             </div>
         </div>
 
-        <dl class="mb-8 max-w-2xl space-y-2 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-            <div class="flex gap-6">
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">Partner</dt>
-                    <dd>{{ contract.partner ?? '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">Type</dt>
-                    <dd>{{ contract.type ?? '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">Value</dt>
-                    <dd>{{ contract.value ?? '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">Status</dt>
-                    <dd>{{ contract.status ?? '—' }}</dd>
-                </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 text-muted">Partner</dt>
+                    <dd class="col-sm-9">{{ contract.partner ?? '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">Type</dt>
+                    <dd class="col-sm-9">{{ contract.type ?? '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">Value</dt>
+                    <dd class="col-sm-9">{{ contract.value ?? '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">Status</dt>
+                    <dd class="col-sm-9">{{ contract.status ?? '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">Signed / expires</dt>
+                    <dd class="col-sm-9">
+                        Signed {{ contract.signed_at ? String(contract.signed_at).slice(0, 10) : '—' }} · Expires
+                        {{ contract.expires_at ? String(contract.expires_at).slice(0, 10) : '—' }}
+                    </dd>
+                </dl>
             </div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">
-                Signed {{ contract.signed_at ? String(contract.signed_at).slice(0, 10) : '—' }} · Expires
-                {{ contract.expires_at ? String(contract.expires_at).slice(0, 10) : '—' }}
-            </div>
-        </dl>
+        </div>
 
-        <h2 class="mb-3 text-lg font-medium">Attach file</h2>
-        <form class="mb-10 flex flex-wrap items-end gap-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900" @submit.prevent="submitFile">
-            <div>
-                <InputLabel for="file" value="File" />
-                <input
-                    id="file"
-                    type="file"
-                    class="mt-1 block text-sm text-gray-600 dark:text-gray-400"
-                    @change="onFileInput"
-                />
-                <InputError class="mt-2" :message="fileForm.errors.file" />
+        <h5 class="mb-3">Attach file</h5>
+        <div class="card mb-4">
+            <div class="card-body">
+                <form class="row g-3 align-items-end" @submit.prevent="submitFile">
+                    <div class="col-md-auto">
+                        <InputLabel for="file" value="File" />
+                        <input id="file" type="file" class="form-control" @change="onFileInput" />
+                        <InputError class="mt-1" :message="fileForm.errors.file" />
+                    </div>
+                    <div class="col-md-auto">
+                        <PrimaryButton type="submit" :disabled="fileForm.processing || !fileForm.file">Upload</PrimaryButton>
+                    </div>
+                </form>
             </div>
-            <PrimaryButton type="submit" :disabled="fileForm.processing || !fileForm.file">Upload</PrimaryButton>
-        </form>
+        </div>
 
-        <h2 class="mb-3 text-lg font-medium">Versions</h2>
-        <ul class="divide-y divide-gray-200 rounded-lg border border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-            <li v-if="!contract.files?.length" class="p-4 text-gray-500">No files yet.</li>
-            <li v-for="f in contract.files" :key="f.id" class="flex justify-between p-4 text-sm">
-                <span>v{{ f.version }} {{ f.original_name ?? 'Attachment' }}</span>
-            </li>
-        </ul>
+        <h5 class="mb-3">Versions</h5>
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                <li v-if="!contract.files?.length" class="list-group-item text-muted">No files yet.</li>
+                <li v-for="f in contract.files" :key="f.id" class="list-group-item d-flex justify-content-between">
+                    <span>v{{ f.version }} {{ f.original_name ?? 'Attachment' }}</span>
+                </li>
+            </ul>
+        </div>
     </AppLayout>
 </template>

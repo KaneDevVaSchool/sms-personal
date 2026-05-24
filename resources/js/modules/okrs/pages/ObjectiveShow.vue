@@ -46,45 +46,38 @@ function destroyObjective(id: number) {
             { label: 'Objectives', href: route('objectives.index') },
             { label: objective.title },
         ]"
+        :title="objective.title"
     >
-        <div class="mb-6 flex flex-wrap justify-between gap-4">
-            <div>
-                <p class="text-sm text-gray-500">Q{{ objective.quarter ?? '—' }} {{ objective.year ?? '' }}</p>
-                <h1 class="text-2xl font-semibold dark:text-gray-100">{{ objective.title }}</h1>
-                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ objective.team?.name }} · Owned by {{ objective.owner?.name }}</p>
-            </div>
-            <div class="flex flex-wrap gap-2">
-                <Link
-                    :href="route('objectives.key-results.index', objective.id)"
-                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm text-white"
-                >
-                    Key results
-                </Link>
-                <Link :href="route('objectives.edit', objective.id)" class="rounded-md border px-3 py-2 text-sm dark:border-gray-600">Edit</Link>
-                <DangerButton type="button" class="text-sm tracking-normal normal-case" @click="destroyObjective(objective.id)">Delete</DangerButton>
+        <div class="row mb-3">
+            <div class="col-12">
+                <p class="text-muted mb-1">Q{{ objective.quarter ?? '—' }} {{ objective.year ?? '' }}</p>
+                <p class="text-muted mb-2">{{ objective.team?.name }} · Owned by {{ objective.owner?.name }}</p>
+                <div class="d-flex flex-wrap gap-2 justify-content-end">
+                    <Link :href="route('objectives.key-results.index', objective.id)" class="btn btn-primary btn-sm">
+                        Key results
+                    </Link>
+                    <Link :href="route('objectives.edit', objective.id)" class="btn btn-outline-primary btn-sm">Edit</Link>
+                    <DangerButton type="button" @click="destroyObjective(objective.id)">Delete</DangerButton>
+                </div>
             </div>
         </div>
 
-        <h2 class="mb-3 text-lg font-medium">Key results</h2>
-        <div class="space-y-3">
-            <div v-if="!objective.key_results?.length" class="rounded-lg border border-dashed p-6 text-center text-gray-500">No key results yet.</div>
-            <div
-                v-for="kr in objective.key_results ?? []"
-                :key="kr.id"
-                class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
-            >
-                <div class="flex flex-wrap justify-between gap-4">
-                    <div>
-                        <h3 class="font-semibold">{{ kr.title }}</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ kr.current ?? '?' }} → {{ kr.target ?? '?' }} {{ kr.unit ?? '' }}</p>
-                    </div>
-                    <Link
-                        :href="route('objectives.key-results.checkins.index', [objective.id, kr.id])"
-                        class="text-sm text-indigo-600 hover:underline dark:text-indigo-400"
-                    >
-                        Check-ins
-                    </Link>
+        <h5 class="mb-3">Key results</h5>
+        <div v-if="!objective.key_results?.length" class="card mb-3">
+            <div class="card-body text-center text-muted">No key results yet.</div>
+        </div>
+        <div v-for="kr in objective.key_results ?? []" :key="kr.id" class="card mb-3">
+            <div class="card-body d-flex flex-wrap justify-content-between align-items-start gap-2">
+                <div>
+                    <h6 class="mb-1">{{ kr.title }}</h6>
+                    <p class="text-muted mb-0 small">{{ kr.current ?? '?' }} → {{ kr.target ?? '?' }} {{ kr.unit ?? '' }}</p>
                 </div>
+                <Link
+                    :href="route('objectives.key-results.checkins.index', [objective.id, kr.id])"
+                    class="btn btn-outline-primary btn-sm"
+                >
+                    Check-ins
+                </Link>
             </div>
         </div>
     </AppLayout>

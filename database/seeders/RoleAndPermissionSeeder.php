@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleAndPermissionSeeder extends Seeder
 {
@@ -27,7 +28,7 @@ class RoleAndPermissionSeeder extends Seeder
             Permission::findOrCreate($name, 'web');
         }
 
-        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $admin = Role::findOrCreate(AppRole::Admin->value, 'web');
         $manager = Role::findOrCreate(AppRole::Manager->value, 'web');

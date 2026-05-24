@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PageHeader from '@/Components/PageHeader.vue';
 import PaginationLinks from '@/Components/PaginationLinks.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
@@ -26,39 +27,38 @@ defineProps<{
             { label: 'Dashboard', href: route('dashboard') },
             { label: 'Contracts' },
         ]"
+        title="Contracts"
     >
-        <div class="mb-4 flex justify-between gap-4">
-            <h1 class="text-2xl font-semibold dark:text-gray-100">Contracts</h1>
-            <Link :href="route('contracts.create')" class="rounded-md bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-500">
-                New contract
-            </Link>
-        </div>
+        <PageHeader title="Contracts" :create-href="route('contracts.create')" create-label="New contract" />
 
-        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-                <thead class="bg-gray-50 dark:bg-gray-950">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Name</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Partner</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Status</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Expires</th>
-                        <th class="px-4 py-3 text-left text-xs uppercase text-gray-500">Files</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                    <tr v-for="c in contracts.data" :key="c.id">
-                        <td class="px-4 py-3">
-                            <Link :href="route('contracts.show', c.id)" class="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
-                                {{ c.name }}
-                            </Link>
-                        </td>
-                        <td class="px-4 py-3 text-sm">{{ c.partner ?? '—' }}</td>
-                        <td class="px-4 py-3 text-sm">{{ c.status ?? '—' }}</td>
-                        <td class="px-4 py-3 text-sm">{{ c.expires_at ? String(c.expires_at).slice(0, 10) : '—' }}</td>
-                        <td class="px-4 py-3 text-sm">{{ c.files_count }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Partner</th>
+                            <th>Status</th>
+                            <th>Expires</th>
+                            <th>Files</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="c in contracts.data" :key="c.id">
+                            <td>
+                                <Link :href="route('contracts.show', c.id)" class="fw-medium">{{ c.name }}</Link>
+                            </td>
+                            <td>{{ c.partner ?? '—' }}</td>
+                            <td>{{ c.status ?? '—' }}</td>
+                            <td>{{ c.expires_at ? String(c.expires_at).slice(0, 10) : '—' }}</td>
+                            <td>{{ c.files_count }}</td>
+                        </tr>
+                        <tr v-if="!contracts.data.length">
+                            <td colspan="5" class="text-center text-muted py-4">No contracts found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <PaginationLinks v-if="contracts.links.length" :links="contracts.links" />
         </div>
     </AppLayout>

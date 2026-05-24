@@ -8,20 +8,17 @@ defineProps<{
 </script>
 
 <template>
-    <nav aria-label="Breadcrumb" class="mb-4 text-sm text-gray-500 dark:text-gray-400">
-        <ol class="flex flex-wrap items-center gap-1">
-            <li v-for="(item, index) in items" :key="index" class="flex items-center gap-1">
-                <span v-if="index > 0" aria-hidden="true">/</span>
-                <Link
-                    v-if="item.href"
-                    :href="item.href"
-                    class="hover:text-gray-800 dark:hover:text-gray-200"
-                >
-                    {{ item.label }}
-                </Link>
-                <span v-else class="font-medium text-gray-800 dark:text-gray-200">
-                    {{ item.label }}
-                </span>
+    <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb m-0">
+            <li
+                v-for="(item, index) in items"
+                :key="index"
+                class="breadcrumb-item"
+                :class="{ active: !item.href && index === items.length - 1 }"
+                :aria-current="!item.href && index === items.length - 1 ? 'page' : undefined"
+            >
+                <Link v-if="item.href" :href="item.href">{{ item.label }}</Link>
+                <span v-else>{{ item.label }}</span>
             </li>
         </ol>
     </nav>

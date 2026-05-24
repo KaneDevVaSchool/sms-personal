@@ -9,7 +9,6 @@ type NotificationRow = {
     created_at: string;
 };
 
-const open = ref(false);
 const items = ref<NotificationRow[]>([]);
 const loading = ref(false);
 
@@ -34,50 +33,45 @@ const unreadCount = () => items.value.filter((n) => !n.read_at).length;
 </script>
 
 <template>
-    <div class="relative">
-        <button
-            type="button"
-            class="relative rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-            aria-label="Notifications"
-            @click="open = !open"
+    <li class="dropdown notification-list">
+        <a
+            class="nav-link dropdown-toggle arrow-none"
+            data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-haspopup="false"
+            aria-expanded="false"
         >
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-            </svg>
-            <span
-                v-if="unreadCount() > 0"
-                class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
-            >
-                {{ unreadCount() }}
-            </span>
-        </button>
-        <div
-            v-if="open"
-            class="absolute right-0 z-50 mt-2 w-80 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900"
-        >
-            <div class="border-b border-gray-100 px-4 py-2 text-sm font-semibold dark:border-gray-800">
-                Notifications
+            <i class="ri-notification-3-fill fs-22"></i>
+            <span v-if="unreadCount() > 0" class="noti-icon-badge">{{ unreadCount() }}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg py-0">
+            <div class="p-2 border-top-0 border-start-0 border-end-0 border-dashed border">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="m-0 fs-16 fw-semibold">Notifications</h6>
+                    </div>
+                </div>
             </div>
-            <ul class="max-h-64 overflow-y-auto text-sm">
-                <li v-if="loading" class="px-4 py-3 text-gray-500">Loading…</li>
-                <li v-else-if="!items.length" class="px-4 py-3 text-gray-500">No notifications</li>
-                <li
+            <div style="max-height: 300px" data-simplebar>
+                <p v-if="loading" class="text-muted p-3 mb-0">Loading…</p>
+                <p v-else-if="!items.length" class="text-muted p-3 mb-0">No notifications</p>
+                <a
                     v-for="n in items"
                     :key="n.id"
-                    class="border-b border-gray-50 px-4 py-2 last:border-0 dark:border-gray-800"
-                    :class="{ 'bg-blue-50/50 dark:bg-blue-950/30': !n.read_at }"
+                    href="javascript:void(0);"
+                    class="dropdown-item p-0 notify-item card m-0 shadow-none"
+                    :class="n.read_at ? 'read-noti' : 'unread-noti'"
                 >
-                    <p class="font-medium text-gray-800 dark:text-gray-100">
-                        {{ n.data.type ?? 'Alert' }}
-                    </p>
-                    <p class="text-xs text-gray-500">{{ n.created_at }}</p>
-                </li>
-            </ul>
+                    <div class="card-body py-2">
+                        <h5 class="noti-item-title fw-medium fs-14 mb-1">
+                            {{ n.data.type ?? 'Alert' }}
+                        </h5>
+                        <small class="noti-item-subtitle text-muted">{{ n.created_at }}</small>
+                        <p v-if="n.data.message" class="mb-0 small text-muted">{{ n.data.message }}</p>
+                    </div>
+                </a>
+            </div>
         </div>
-    </div>
+    </li>
 </template>

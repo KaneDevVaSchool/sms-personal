@@ -10,6 +10,7 @@
         "esModuleInterop": true,
         "lib": ["ESNext", "DOM"],
         "skipLibCheck": true,
+        "ignoreDeprecations": "6.0",
         "noEmit": true,
         "baseUrl": ".",
         "paths": {
@@ -18,5 +19,5 @@
         },
         "types": ["vite/client"]
     },
-    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue"]
+    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue", "resources/js/**/*.d.ts"]
 }

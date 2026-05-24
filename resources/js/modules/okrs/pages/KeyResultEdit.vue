@@ -47,39 +47,37 @@ function submit() {
             { label: 'Key results', href: route('objectives.key-results.index', objective.id) },
             { label: keyResult.title },
         ]"
+        title="Edit key result"
     >
-        <h1 class="mb-6 text-2xl font-semibold dark:text-gray-100">Edit key result</h1>
-
-        <form class="max-w-xl space-y-5 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900" @submit.prevent="submit">
-            <div>
-                <InputLabel for="title" value="Title" />
-                <TextInput id="title" v-model="form.title" required class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.title" />
+        <div class="card">
+            <div class="card-body">
+                <form @submit.prevent="submit">
+                    <div class="mb-3">
+                        <InputLabel for="title" value="Title" />
+                        <TextInput id="title" v-model="form.title" required />
+                        <InputError class="mt-1" :message="form.errors.title" />
+                    </div>
+                    <div class="mb-3">
+                        <InputLabel for="target" value="Target" />
+                        <TextInput id="target" v-model="form.target" type="number" step="any" />
+                        <InputError class="mt-1" :message="form.errors.target" />
+                    </div>
+                    <div class="mb-3">
+                        <InputLabel for="current" value="Current" />
+                        <TextInput id="current" v-model="form.current" type="number" step="any" />
+                        <InputError class="mt-1" :message="form.errors.current" />
+                    </div>
+                    <div class="mb-3">
+                        <InputLabel for="unit" value="Unit" />
+                        <TextInput id="unit" v-model="form.unit" />
+                        <InputError class="mt-1" :message="form.errors.unit" />
+                    </div>
+                    <div class="d-flex gap-2">
+                        <PrimaryButton :disabled="form.processing">Update</PrimaryButton>
+                        <Link :href="route('objectives.key-results.index', objective.id)" class="btn btn-light">Cancel</Link>
+                    </div>
+                </form>
             </div>
-            <div>
-                <InputLabel for="target" value="Target" />
-                <TextInput id="target" v-model="form.target" type="number" step="any" class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.target" />
-            </div>
-            <div>
-                <InputLabel for="current" value="Current" />
-                <TextInput id="current" v-model="form.current" type="number" step="any" class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.current" />
-            </div>
-            <div>
-                <InputLabel for="unit" value="Unit" />
-                <TextInput id="unit" v-model="form.unit" class="mt-1 block w-full" />
-                <InputError class="mt-2" :message="form.errors.unit" />
-            </div>
-            <div class="flex gap-3">
-                <PrimaryButton :disabled="form.processing">Update</PrimaryButton>
-                <Link
-                    :href="route('objectives.key-results.index', objective.id)"
-                    class="inline-flex border px-4 py-2 text-xs uppercase"
-                >
-                    Cancel
-                </Link>
-            </div>
-        </form>
+        </div>
     </AppLayout>
 </template>

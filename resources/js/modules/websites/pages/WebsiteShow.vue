@@ -41,69 +41,46 @@ function destroySite(id: number) {
             { label: 'Websites', href: route('websites.index') },
             { label: website.name },
         ]"
+        :title="website.name"
     >
-        <div class="mb-6 flex flex-wrap justify-between gap-4">
-            <h1 class="text-2xl font-semibold dark:text-gray-100">{{ website.name }}</h1>
-            <div class="flex gap-2">
-                <Link
-                    :href="route('websites.edit', website.id)"
-                    class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
-                >
-                    Edit
-                </Link>
-                <DangerButton type="button" class="text-sm tracking-normal normal-case" @click="destroySite(website.id)">
-                    Delete
-                </DangerButton>
+        <div class="row mb-3">
+            <div class="col-12 d-flex flex-wrap justify-content-end gap-2">
+                <Link :href="route('websites.edit', website.id)" class="btn btn-outline-primary btn-sm">Edit</Link>
+                <DangerButton type="button" @click="destroySite(website.id)">Delete</DangerButton>
             </div>
         </div>
 
-        <dl class="mb-8 max-w-2xl space-y-3 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-            <div class="grid gap-y-3">
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">URL</dt>
-                    <dd>
-                        <a
-                            v-if="website.url"
-                            :href="website.url"
-                            class="text-indigo-600 hover:underline dark:text-indigo-400"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            {{ website.url }}
-                        </a>
-                        <span v-else class="text-gray-500">—</span>
+        <div class="card mb-3">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 text-muted">URL</dt>
+                    <dd class="col-sm-9">
+                        <a v-if="website.url" :href="website.url" target="_blank" rel="noopener">{{ website.url }}</a>
+                        <span v-else class="text-muted">—</span>
                     </dd>
-                </div>
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">Status</dt>
-                    <dd>{{ website.status ?? '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">Tech stack</dt>
-                    <dd>{{ website.tech_stack ?? '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">CMS</dt>
-                    <dd>{{ website.cms ?? '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">SSL expires</dt>
-                    <dd>{{ website.ssl_expires_at ? String(website.ssl_expires_at).slice(0, 10) : '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs uppercase text-gray-500">Resource</dt>
-                    <dd>{{ website.resource?.name ?? '—' }}</dd>
-                </div>
+                    <dt class="col-sm-3 text-muted">Status</dt>
+                    <dd class="col-sm-9">{{ website.status ?? '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">Tech stack</dt>
+                    <dd class="col-sm-9">{{ website.tech_stack ?? '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">CMS</dt>
+                    <dd class="col-sm-9">{{ website.cms ?? '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">SSL expires</dt>
+                    <dd class="col-sm-9">{{ website.ssl_expires_at ? String(website.ssl_expires_at).slice(0, 10) : '—' }}</dd>
+                    <dt class="col-sm-3 text-muted">Resource</dt>
+                    <dd class="col-sm-9">{{ website.resource?.name ?? '—' }}</dd>
+                </dl>
             </div>
-        </dl>
+        </div>
 
-        <h2 class="mb-3 text-lg font-medium">Environments</h2>
-        <ul class="divide-y divide-gray-200 rounded-lg border border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-            <li v-if="!website.environments?.length" class="p-4 text-gray-500">None</li>
-            <li v-for="e in website.environments" :key="e.id" class="flex justify-between p-4">
-                <span>{{ e.name ?? 'Environment' }}</span>
-                <span class="text-sm text-gray-500">{{ e.url ?? '—' }}</span>
-            </li>
-        </ul>
+        <h5 class="mb-3">Environments</h5>
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                <li v-if="!website.environments?.length" class="list-group-item text-muted">None</li>
+                <li v-for="e in website.environments" :key="e.id" class="list-group-item d-flex justify-content-between">
+                    <span>{{ e.name ?? 'Environment' }}</span>
+                    <span class="text-muted">{{ e.url ?? '—' }}</span>
+                </li>
+            </ul>
+        </div>
     </AppLayout>
 </template>

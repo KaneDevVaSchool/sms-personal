@@ -1,3 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* OPS Platform overrides on Jidox theme */
+
+.logo.ops-brand .logo-lg,
+.logo.ops-brand .logo-sm {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--ct-primary);
+    text-decoration: none;
+    line-height: 1.2;
+}
+
+.logo-topbar.ops-brand .logo-lg,
+.logo-topbar.ops-brand .logo-sm {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ct-primary);
+    text-decoration: none;
+}
+
+.auth-brand.ops-brand .ops-brand-text {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--ct-primary);
+}
